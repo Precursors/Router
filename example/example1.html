@@ -9,9 +9,9 @@
     <script type="text/javascript" src="../src/Router.js"></script>
     <script type="text/javascript">
       var router = new Router(window);
-      router.router('test', function (hash) {
-        
-      });
+      router.router('test', function () {
+        console.log(this.pwd());
+      }).render('test');
     </script>
   </body>
 </html>

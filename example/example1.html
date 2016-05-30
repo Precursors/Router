@@ -3,6 +3,44 @@
   <head>
     <meta charset="utf-8">
     <title>example 1</title>
+    <style media="screen">
+      * {
+        box-sizing: border-box;
+      }
+      a {
+        color: rgb(20, 153, 237);
+        display: block;
+        text-decoration: none;
+        line-height: 1.7;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .output {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 400px;
+        border: 1px solid rgb(20, 153, 237);
+      }
+      .output .message {
+        list-style: none;
+        color: #948787;
+        line-height: 1.7;
+        border-bottom: 1px solid currentColor;
+      }
+      .output .message:last-of-type {
+        animation: show .8s;
+      }
+      @keyframes show {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
   </head>
   <body>
     <a href="#">clean</a>
@@ -10,17 +48,31 @@
     <a href="#name/123">name/123</a>
     <a href="#blog/11/21">blog/11/21</a>
     <a href="#myTitle/test/21">myTitle/test/21</a>
+    <div class="output">
+      路由输出：
+      <ul id="output">
+
+      </ul>
+    </div>
     <script type="text/javascript" src="../src/Router.js"></script>
     <script type="text/javascript">
+
+      var $output = document.querySelector('#output');
+
       var router = new Router(window);
-      router.router('test', function () {
-        console.log(this.pwd());
-      }).router('name/:id', function (param) {
-        console.log(param.id);
-      }).router('blog/:month/:day', function (param) {
-        console.log(param.month, param.day);
-      }).router(':title/test/:id', function (param) {
-        console.log(param.title, param.id);
+      router.router('', function () {
+        $output.innerHTML = '';
+      }).router('test', function () {
+        $output.innerHTML += '<li class="message">render: ' + this.pwd();
+      }).router('name/:id', function (params) {
+        $output.innerHTML += '<li class="message">render: ' + this.pwd() +
+          '<br/>params: ' + JSON.stringify(params);
+      }).router('blog/:month/:day', function (params) {
+        $output.innerHTML += '<li class="message">render: ' + this.pwd() +
+          '<br/>params: ' + JSON.stringify(params);
+      }).router(':title/test/:id', function (params) {
+        $output.innerHTML += '<li class="message">render: ' + this.pwd() +
+          '<br/>params: ' + JSON.stringify(params);
       })
     </script>
   </body>

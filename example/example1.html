@@ -5,10 +5,11 @@
     <title>example 1</title>
   </head>
   <body>
-    <a href="#">clear</a>
-    <a href="#test">goto test</a>
-    <a href="#name/123">goto name id:123</a>
-    <a href="#blog/11/21">goto month:12 day:21</a>
+    <a href="#">clean</a>
+    <a href="#test">test</a>
+    <a href="#name/123">name/123</a>
+    <a href="#blog/11/21">blog/11/21</a>
+    <a href="#myTitle/test/21">myTitle/test/21</a>
     <script type="text/javascript" src="../src/Router.js"></script>
     <script type="text/javascript">
       var router = new Router(window);
@@ -18,6 +19,8 @@
         console.log(param.id);
       }).router('blog/:month/:day', function (param) {
         console.log(param.month, param.day);
+      }).router(':title/test/:id', function (param) {
+        console.log(param.title, param.id);
       })
     </script>
   </body>

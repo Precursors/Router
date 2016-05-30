@@ -16,7 +16,7 @@ function Router (win) {
   var pwd = self.pwd = function (hash) {
 
     if (hash !== undefined && hash !== null && hash !== false) {
-      win.location.hash = hash;
+      location.hash = hash;
 
       return self;
     }
@@ -124,6 +124,12 @@ function Router (win) {
     return result;
   }
 
+  /**
+   * 合并两个集合 规则为第一个集合项为key 第二个集合项为value
+   * @param  {Array} keys   要作为key的一个数组
+   * @param  {Array} values 要作为value的一个数组
+   * @return {Object}       返回转换好的数据
+   */
   function concat (keys, values) {
 
     var len = keys.length;

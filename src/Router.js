@@ -4,14 +4,15 @@ function Router (win) {
 
   win = win || window;
 
-  var self = this;
-  var routers = self.__routers = {};  // 存储着路由的hash映射
-  var location = win.location;
+  var self        = this;
+  var routers     = self.__routers = {};  // 存储着路由的hash映射
+  var location    = win.location;
+  var notfound    = undefined;            // 可能会存在的 未匹配 路由的回调
 
   /**
    * 获取或设置hash路径
-   * @param  {String}           hash 可选的路径的值
-   * @return {String or Router}      如果是get 返回路径的值 如果是set 返回Router实例
+   * @param  {String}             hash 可选的路径的值
+   * @return {String or Router}   如果是get 返回路径的值 如果是set 返回Router实例
    */
   var pwd = self.pwd = function (hash) {
 
@@ -29,11 +30,11 @@ function Router (win) {
    * @param  {String}   hash     要路由的hash值
    * @param  {Function} callback 路由时触发的事件
    * @return {Router}            用于链式调用
-   * @TODO   后续要加上参数的匹配
    */
   var router = self.router = function (hash, callback) {
 
     if (typeof callback !== 'function') {
+
       throw new Error('callback must be a function');
     }
 
@@ -49,14 +50,34 @@ function Router (win) {
       call.flag = '$';
       call.reg = prepend(hash.replace(/\:([^\/]+)?/g, function (_, $1) {
 
+        // 把参数一个个择出来 并存在该路由信息中的params属性中
         params.push($1);
 
+        // 把原路径中的:XXX改为 ([^\/]+)?
+        // 原串：
+        //    name/:id/:age
+        // 转换后：
+        //    name/([^\/]+)?/([^\/]+)?
+        // 所以 params的顺序很重要。。。
         return '([^\/]+)?';
       }));
+
       call.params = params;
     }
 
     call.events.push(callback);
+
+    return self;
+  }
+
+  /**
+   * 设置未匹配的路由回调
+   * @param  {Function} callback 如果触发了未匹配的路由 则会执行该function
+   * @return {Router}            用于链式调用
+   */
+  var unknown = self.unknown = function (callback) {
+
+    notfound = callback;
 
     return self;
   }
@@ -71,6 +92,25 @@ function Router (win) {
     return self.pwd(hash);
   }
 
+  // hashchange的事件 也可手动触发
+  var hashHandler = self.hold = function () {
+
+    var hash = self.pwd();
+    var events = extract(hash, routers); // routers[hash];
+
+    if (events.length) {
+
+      for (var index in events) {
+
+        fireEvent(events[index].events, events[index].params);
+      }
+    } else {
+
+      // 如果没有匹配到 执行可能会设置的默认的路由
+      notfound && fireEvent([notfound]);
+    }
+  }
+
   /**
    * 重新生成正则匹配的值
    * @param  {RegExp} old 原始的正则表达式
@@ -81,8 +121,11 @@ function Router (win) {
     if (typeof old === 'string') return prepend(new RegExp(old));
 
     var source = old.source;
+
     // 如果有^标记和$ 直接返回
     if (source.indexOf('^') === 0 && source.lastIndexOf('$') === (source.length - 1)) return old;
+
+    // 否则 返回添加了 ^ 和  $ 标记的正则对象
     return new RegExp('^' + old.source + '$', old.flags);
   }
 
@@ -99,6 +142,7 @@ function Router (win) {
     for (var hash in obj) {
 
       var events = obj[hash];
+
       // 说明存在于 使用匹配的情况 而且匹配成功了
       if (events.flag === '$' && events.reg.test(key)) {
 
@@ -111,9 +155,9 @@ function Router (win) {
           result.push({
             events: events.events,
             params: params
-          })
+          });
         }
-      } else if (key === hash) {  // 这个表示为完全的匹配
+      } else if (key === hash) {  // 这个表示为不涉及包涵参数的匹配
 
         result.push({
           events: events.events
@@ -136,7 +180,7 @@ function Router (win) {
     var params = {};
     var index = 0;
 
-    // key和value的长度相等
+    // 只有在key和value的长度相等时才会进行赋值并返回
     if (values.length === len) {
 
       for (; index < len; index++) {
@@ -164,21 +208,6 @@ function Router (win) {
     }
   }
 
-  // hashchange的事件
-  function hashHandler () {
-
-    var hash = self.pwd();
-    var events = extract(hash, routers); // routers[hash];
-
-    if (events.length) {
-
-      for (var index in events) {
-
-        fireEvent(events[index].events, events[index].params);
-      }
-    }
-  }
-
   // 初始化
   function init () {
 
@@ -186,5 +215,4 @@ function Router (win) {
   }
 
   init();
-
 }

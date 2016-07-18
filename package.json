@@ -1,0 +1,22 @@
+{
+  "name": "hash-router",
+  "version": "0.1.1",
+  "description": "前端路由 基于 window.location.hash",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Precursors/Router.git"
+  },
+  "author": "jiasm",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Precursors/Router/issues"
+  },
+  "homepage": "https://github.com/Precursors/Router#readme"
+}

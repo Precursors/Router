@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>example 1</title>
+    <style media="screen">
+      * {
+        box-sizing: border-box;
+      }
+      a {
+        color: rgb(20, 153, 237);
+        display: block;
+        text-decoration: none;
+        line-height: 1.7;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .output {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 400px;
+        border: 1px solid rgb(20, 153, 237);
+      }
+      .output .message {
+        list-style: none;
+        color: #948787;
+        line-height: 1.7;
+        border-bottom: 1px solid currentColor;
+      }
+      .output .message:last-of-type {
+        animation: show .8s;
+      }
+      @keyframes show {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+    <script type="text/javascript" src="../src/Router.js"></script>
+    <script type="text/javascript">
+
+      var $output = document.querySelector('#output');
+
+      var router = new Router(window);
+      router.before(function () {
+        console.log('before');
+        return 'this is before';
+      }).after(function (params) {
+        console.log('after catch:' + params);
+      }).router('name/:id', function (params, beforeParm) {
+        console.log('before return: \n' + beforeParm);
+        return params.id;
+      }).unknown(function () {
+        this.render('name/123');
+      }).hold();
+    </script>
+  </body>
+</html>

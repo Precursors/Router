@@ -6,6 +6,8 @@ function Router (win) {
 
   var self        = this;
   var routers     = self.__routers = {};  // 存储着路由的hash映射
+  var beforeFunc  = function () {};       // 每次触发路由事件前会调用（函数的返回值会作为路由回调的第二个参数）
+  var afterFunc   = function () {};       // 每次触发路由后会调用（函数第一个参数为路由调用的返回值）
   var location    = win.location;
   var notfound    = undefined;            // 可能会存在的 未匹配 路由的回调
 
@@ -112,6 +114,28 @@ function Router (win) {
   }
 
   /**
+   * 设置路由回调的前置callback
+   * @param  {Function} func 回调函数
+   * @return {Router}        用于链式调用
+   */
+  var before = self.before = function (callback) {
+    if (typeof callback !== 'function') throw new Error('callback must be a function');
+    beforeFunc = callback;
+    return self;
+  }
+
+  /**
+   * 设置路由回调的后置callback
+   * @param  {Function} func 回调函数
+   * @return {Router}        用于链式调用
+   */
+  var after = self.after = function (callback) {
+    if (typeof callback !== 'function') throw new Error('callback must be a function');
+    afterFunc = callback;
+    return self;
+  }
+
+  /**
    * 重新生成正则匹配的值
    * @param  {RegExp} old 原始的正则表达式
    * @return {RegExp}     添加^标记的正则表达式
@@ -204,7 +228,7 @@ function Router (win) {
     for (var index in events) {
 
       var call = events[index];
-      call.call(self, param);
+      afterFunc.call(self, call.call(self, param, beforeFunc.call(self)));
     }
   }
 

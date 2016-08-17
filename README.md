@@ -1,6 +1,11 @@
 # Router
 前端路由 基于 window.location.hash
 
+```
+npm i
+npm start
+```
+
 支持对参数的获取
 ``` javascript
 router.router('name/:id', function (params) {

@@ -1,19 +1,109 @@
 # Router
-前端路由 基于 window.location.hash
+frontend router base on `window.location.hash`
 
-```
-npm i
-npm start
+## Installation
+
+### with webpack
+
+```bash
+npm install hash-routers
 ```
 
-支持对参数的获取
-``` javascript
-router.router('name/:id', function (params) {
-  console.log(params.id);
+### simple script
+```html
+<script src="./src/Router.js"></script>
+```
+
+## Documents
+
+### base
+
+```javascript
+let router = new Router()
+
+router.route('/index', function () {
+  // ...
+})
+
+router.route('/list', function () {
+  // ...
 })
 ```
 
-2016/7/18:
-添加 before after方法：
-* 每次调用router回调前调用before，before的返回值会作为router回调的第二个参数传入
-* 每次调用router回调后调用after，router的返回值会作为after的第一个参数传入
+### pipeline
+
+```javascript
+router.route('/index', function () {
+  // ...
+}).route('/list', function () {
+  // ...
+})
+```
+
+### multiple path handler
+
+```javascript
+router.route('/index', '/404', function () {
+  // ...
+})
+
+router.route(['/index', '/404'], function () {
+  // ...
+})
+```
+
+### path params
+
+```javascript
+router.route('/detail/:id', function (event) {
+  console.log(event.params) // { id: x }
+})
+```
+
+### multiple handler
+
+You can exec `event.preventDefault()` to terminate the execution below
+
+```javascript
+router.route('/index', function (event) {
+  event.preventDefault()
+}).route('/index', function (params) {
+  // can not be call
+})
+```
+
+#### data transmission
+
+Get data from `event.datas`
+
+```javascript
+router.route('/index', function () {
+  return 1
+}).route('/index', function () {
+  return {
+    name: 'Niko'
+  }
+}).route('/index', function () {
+
+}).route('/index', function (event) {
+  console.log(event.datas)
+  // [1, { name: 'Niko' }, undefined]
+})
+```
+
+### async supports
+
+```javascript
+router.route('/index', async function () {
+  let result = await somePromise
+
+  return result
+}).route('/index', function (event) {
+  console.log(`get data: ${event.datas[0]}`)
+})
+```
+
+## TODO
+
+**Programming**  
+*yes... it's just a document for now*

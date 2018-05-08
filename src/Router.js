@@ -1,6 +1,4 @@
-'use strict'
-
-void (win => {
+(() => {
   const assist = ['before', 'after']
   /**
    * 为当前实例生成before和after事件
@@ -207,5 +205,12 @@ void (win => {
     }
   }
 
-  window.Router = Router
-})(window)
+  // init
+  if (typeof window !== 'undefined') {
+    window.Router = Router
+  } else if (typeof module !== 'undefined') {
+    module.exports = Router
+  } else {
+    return Router
+  }
+})()

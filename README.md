@@ -76,7 +76,7 @@ router.addRoute('/index', function (event) {
 })
 ```
 
-#### data transmission
+#### data relay
 
 Get data from `event.datas`
 

@@ -1,6 +1,4 @@
 (() => {
-  const paramPathReg = /(?=\/)(\:\w*?)(?=\/)/
-
   class RouterEvent {
     constructor ({
       datas = [],

@@ -19,13 +19,17 @@ npm install hash-routers
 ### base
 
 ```javascript
+import Router from 'hash-routers'
+// const Router = require('hash-routers')
+// const Router = window.Router
+
 let router = new Router()
 
-router.route('/index', function () {
+router.addRoute('/index', function () {
   // ...
 })
 
-router.route('/list', function () {
+router.addRoute('/list', function () {
   // ...
 })
 ```
@@ -33,9 +37,9 @@ router.route('/list', function () {
 ### pipeline
 
 ```javascript
-router.route('/index', function () {
+router.addRoute('/index', function () {
   // ...
-}).route('/list', function () {
+}).addRoute('/list', function () {
   // ...
 })
 ```
@@ -43,11 +47,11 @@ router.route('/index', function () {
 ### multiple path handler
 
 ```javascript
-router.route('/index', '/404', function () {
+router.addRoute('/index', '/404', function () {
   // ...
 })
 
-router.route(['/index', '/404'], function () {
+router.addRoute(['/index', '/404'], function () {
   // ...
 })
 ```
@@ -55,7 +59,7 @@ router.route(['/index', '/404'], function () {
 ### path params
 
 ```javascript
-router.route('/detail/:id', function (event) {
+router.addRoute('/detail/:id', function (event) {
   console.log(event.params) // { id: x }
 })
 ```
@@ -65,9 +69,9 @@ router.route('/detail/:id', function (event) {
 You can exec `event.preventDefault()` to terminate the execution below
 
 ```javascript
-router.route('/index', function (event) {
+router.addRoute('/index', function (event) {
   event.preventDefault()
-}).route('/index', function (params) {
+}).addRoute('/index', function (params) {
   // can not be call
 })
 ```
@@ -77,15 +81,15 @@ router.route('/index', function (event) {
 Get data from `event.datas`
 
 ```javascript
-router.route('/index', function () {
+router.addRoute('/index', function () {
   return 1
-}).route('/index', function () {
+}).addRoute('/index', function () {
   return {
     name: 'Niko'
   }
-}).route('/index', function () {
+}).addRoute('/index', function () {
 
-}).route('/index', function (event) {
+}).addRoute('/index', function (event) {
   console.log(event.datas)
   // [1, { name: 'Niko' }, undefined]
 })
@@ -94,12 +98,55 @@ router.route('/index', function () {
 ### async supports
 
 ```javascript
-router.route('/index', async function () {
+router.addRoute('/index', async function () {
   let result = await somePromise
 
   return result
-}).route('/index', function (event) {
+}).addRoute('/index', function (event) {
   console.log(`get data: ${event.datas[0]}`)
+})
+```
+
+### remove handlers
+
+seem syntax like `addRoute`
+
+```javascript
+let handler = function () {
+  // just call on page2
+}
+router.addRoute(['/page1', '/page2', '/page3'], handler)
+
+router.removeRoute('/page1', '/page3', handler)
+```
+
+### jump to path
+
+```javascript
+router.addRoute('/page1', function () {
+
+})
+
+router.jump('/page1')
+```
+
+#### jump path with params
+
+```javascript
+router.addRoute('/user/:uid', function (event) {
+  console.log(`got data: ${event.params}`) // got data: { uid: 1 }
+})
+
+router.jump('/user/:uid', {
+  uid: 1
+})
+```
+
+### unknown handler
+
+```javascript
+router.unknown(function (path) {
+  console.log(`unknown path: ${path}`)
 })
 ```
 

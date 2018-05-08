@@ -120,24 +120,24 @@ router.addRoute(['/page1', '/page2', '/page3'], handler)
 router.removeRoute('/page1', '/page3', handler)
 ```
 
-### jump to path
+### redirect
 
 ```javascript
 router.addRoute('/page1', function () {
 
 })
 
-router.jump('/page1')
+router.redirect('/page1')
 ```
 
-#### jump path with params
+#### redirect with params
 
 ```javascript
 router.addRoute('/user/:uid', function (event) {
   console.log(`got data: ${event.params}`) // got data: { uid: 1 }
 })
 
-router.jump('/user/:uid', {
+router.redirect('/user/:uid', {
   uid: 1
 })
 ```

@@ -31,7 +31,6 @@
     console.log(event, 4)
   })
   .removeRoute('/index/:path1', handler2)
-  .removeRoute(['/index/:path3', '/index/:path4'], handler3)
   .unknown(_ => console.log('unknown call'))
 
   location.hash = '/index/list'

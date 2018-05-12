@@ -1,5 +1,5 @@
 # Router
-frontend router base on `window.location.hash`
+:hash: frontend router base on `window.location.hash`
 
 ## Installation
 

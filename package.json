@@ -1,6 +1,6 @@
 {
   "name": "hash-routers",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "frontend router base on `window.location.hash`",
   "main": "index.js",
   "directories": {
